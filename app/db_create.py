@@ -1,7 +1,7 @@
-from models import Base
-from models.users import *
-from models.enquiries import *
-from models.replies import Reply
+from rest.models import Base
+from rest.models.users import *
+from rest.models.enquiries import *
+from rest.models.replies import Reply
 from sqlalchemy import create_engine
 
 db_connection_url = "postgresql://ishan@localhost/postgres"
