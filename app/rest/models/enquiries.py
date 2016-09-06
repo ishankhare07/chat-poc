@@ -13,4 +13,9 @@ class Enquiry(Base):
     def __repr__(self):
         return '<Enquiry: {0}, by: <some user_id>>'.format(self.id)
 
-
+    def jsonify(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "content": self.content
+                }
