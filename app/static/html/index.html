@@ -16,21 +16,23 @@
 
         <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css" />
     </head>
-    <body ng-app="chatApp">
+    <body ng-app="chatApp" ng-controller="chatController as chat">
         <md-toolbar>
             <div class="md-toolbar-tools">
-
+                {{ chat.total_time / 1000 }}
             </div>
         </md-toolbar>
-        <ng-view>
-        </ng-view>
-        <md-fab-speed-dial class="md-fling md-fab-bottom-right">
-            <md-fab-trigger>
-                <md-button class="md-fab md-warn md-hue-2">
-                    <md-tooltip md-direction="left">Post enquiry</md-tooltip>
-                    +
-                </md-button>
-            </md-fab-trigger>
-        </md-fab-speed-dial>
+        <md-card layout="row">
+            <md-list flex="50">
+                <md-subheader>
+                    Clients {{ chat.clients.length }}
+                </md-subheader>
+            </md-list>
+            <md-list flex="50">
+                <md-subheader>
+                    Messages {{ chat.message_count }}
+                </md-subheader>
+            </md-list>
+        </md-card>
     </body>
 </html>
