@@ -13,7 +13,7 @@ app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
 });
 
-app.controller('chatController', function($interval, $timeout, $scope) {
+app.controller('chatController', function($interval, $timeout, $scope, $location) {
     this.start_time = new Date().getTime();
     this.total_time = 0;
     this.clients = [];
@@ -22,7 +22,7 @@ app.controller('chatController', function($interval, $timeout, $scope) {
     var self = this;
 
     this.create_clients = function() {
-        var ws = new WebSocket("ws://localhost:8888/api/ws");
+        var ws = new WebSocket("ws://" + $location.host() + ":8888/api/ws");
 
         ws.onmessage = self.on_message;
         ws.onclose = self.on_close;
