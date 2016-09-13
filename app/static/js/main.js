@@ -22,12 +22,16 @@ app.controller('chatController', function($interval, $timeout, $scope, $location
     var self = this;
 
     this.create_clients = function() {
+      try{
         var ws = new WebSocket("ws://" + $location.host() + ":8888/api/ws");
 
         ws.onmessage = self.on_message;
         ws.onclose = self.on_close;
 
         self.clients.push(ws);
+      } catch (error) {
+        $interval.cancel(self.clientCreatorInterval);
+      }
     };
 
     this.on_message = function(message) {
@@ -54,7 +58,7 @@ app.controller('chatController', function($interval, $timeout, $scope, $location
         });
     }
 
-    $interval(this.create_clients, 100);
+    this.clientCreatorInterval = $interval(this.create_clients, 100);
     $interval(function() {
         self.send_messages();
         self.total_time = ((new Date().getTime()) - self.start_time);

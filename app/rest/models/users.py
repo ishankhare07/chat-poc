@@ -8,7 +8,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-    user_type = Column(String)       # paid/un-paid
+    user_type = Column(String, default="unpaid")       # paid/un-paid
     enquiries = relationship("Enquiry", backref="users")
 
     def __repr__(self):

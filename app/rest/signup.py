@@ -5,7 +5,7 @@ class SignupHandler(BaseHandler):
         email = self.json.get('email')
         password = self.json.get('password')
 
-        user = User(email=email, password=password)
+        user = User(email=email, password=password, user_type="unpaid")
 
         if session.query(User).filter_by(email=email).all():
             # email exists
@@ -19,6 +19,6 @@ class SignupHandler(BaseHandler):
             session.commit()
             print("successfully created user")
             self.write(json.dumps(dict(
-                message="Successfullt created user",
+                message="Successfully created user",
                 status="Success"
                 )))
