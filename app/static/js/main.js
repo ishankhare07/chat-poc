@@ -54,7 +54,7 @@ app.controller('chatController', function($interval, $timeout, $scope, $location
         });
     }
 
-    $interval(this.create_clients, 100);
+    $interval(self.create_clients, 100);
     $interval(function() {
         self.send_messages();
         self.total_time = ((new Date().getTime()) - self.start_time);
