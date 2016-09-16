@@ -1,7 +1,7 @@
 from tornado.web import RequestHandler
-from .models.users import *
-from .models.enquiries import *
-from .models.replies import *
+from .models.existing_models import EnquiryDatum, User, Reply
+#from .models.enquiries import *
+#from .models.replies import *
 from . import session
 import json
 

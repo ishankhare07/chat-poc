@@ -5,10 +5,13 @@ from logging.config import fileConfig
 import os, sys
 
 sys.path.append(os.getcwd())
+'''
 from models.users import *
 from models.enquiries import *
 from models.replies import *
-from models import Base
+'''
+from models.existing_models import *
+#from models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -44,7 +47,7 @@ def run_migrations_offline():
     """
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url, target_metadata=target_metadata, literal_binds=True)
+        url=url, target_metadata=target_metadata, literal_binds=True, comapre_type=True)
 
     with context.begin_transaction():
         context.run_migrations()
@@ -65,7 +68,8 @@ def run_migrations_online():
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
-            target_metadata=target_metadata
+            target_metadata=target_metadata,
+            compare_type=True
         )
 
         with context.begin_transaction():
