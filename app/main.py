@@ -15,7 +15,7 @@ def make_app():
     return Application([
         (r'/api/signup', SignupHandler),
         (r'/api/login', LoginHandler),
-        (r'/api/ws', WsHandler),
+        (r'/api/ws/(.*)', WsHandler),
         (r'/(.*)', StaticFileHandler,
             dict(path=os.path.join(os.getcwd(), "static")))
     ], autoreload=True)
