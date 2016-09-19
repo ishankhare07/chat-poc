@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, validates, ValidationError, post_load
 from ..models.existing_models import Reply
 
-class MessageParser(Schema):
+class MessageValidator(Schema):
     type = fields.Str(required=True)
     enquiry_id = fields.Integer(required=True)
     from_user = fields.Integer(required=True)
