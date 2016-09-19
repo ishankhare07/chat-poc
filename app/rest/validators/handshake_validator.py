@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, validates, ValidationError
 
-class HandshakeParser(Schema):
+class HandshakeValidator(Schema):
     type = fields.Str()
     user_id = fields.Integer()
 

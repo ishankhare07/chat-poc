@@ -6,15 +6,11 @@ if not os.environ.get('DB_CONNECTION_URL'):
 
 from tornado.web import Application, StaticFileHandler
 from tornado.ioloop import IOLoop
-from rest.signup import SignupHandler
-from rest.login import LoginHandler
 from rest.ws import WsHandler
 
 
 def make_app():
     return Application([
-        (r'/api/signup', SignupHandler),
-        (r'/api/login', LoginHandler),
         (r'/api/ws/(.*)', WsHandler),
         (r'/(.*)', StaticFileHandler,
             dict(path=os.path.join(os.getcwd(), "static")))
