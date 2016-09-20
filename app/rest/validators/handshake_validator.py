@@ -1,12 +1,13 @@
 from marshmallow import Schema, fields, validates, ValidationError
 
 class HandshakeValidator(Schema):
-    type = fields.Str()
-    user_id = fields.Integer()
+    user_id = fields.Integer(required=True)
 
-    @validates('type')
-    def validate_type(self, data):
-        if not data == "handshake":
-            raise ValidationError("Opening connection type must be a handshake")
-
-
+    @validates('user_id')
+    def validate_user_id(self, data):
+        """
+            we also need to verify if the user_id exists
+            and match with the jwt
+        """
+        if not isinstance(data, int):
+            data = int(data)
