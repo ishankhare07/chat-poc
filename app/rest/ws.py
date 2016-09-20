@@ -22,9 +22,6 @@ class WsHandler(WebSocketHandler):
             }))
 
     def on_message(self, message):
-        print(type(message), message)
-        data = json.loads(message)
-
         result = MessageValidator().loads(message)
 
         if result.errors:
