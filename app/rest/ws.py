@@ -10,7 +10,7 @@ class WsHandler(WebSocketHandler):
         # make it int until handshake validator not completed
         result = HandshakeValidator().load({'user_id': user_id})
         if result.errors:
-            print(result)
+            print('closing:', result)
             self.write_message(json.dumps(result.errors))
             self.close()
         else:

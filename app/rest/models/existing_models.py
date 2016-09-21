@@ -223,7 +223,7 @@ class Reply(Base):
     from_user = Column(Integer, ForeignKey('user.user_id'))
     to_user = Column(Integer, ForeignKey('user.user_id'))
     local_msg_id = Column(Integer)
-    read = Column(Boolean, default=False)
+    read = Column(Boolean, default=False, nullable=False)
 
     def __repr__(self):
         return '<Reply: {0}, msg: {1}>'.format(self.id, self.message)
