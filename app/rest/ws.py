@@ -1,7 +1,7 @@
 from .base import *
 from tornado.websocket import WebSocketHandler
-from .validators import *
-import sys
+from .validators import PayloadValidator
+from .validators import HandshakeValidator
 
 class WsHandler(WebSocketHandler):
     connected = {}
@@ -22,13 +22,17 @@ class WsHandler(WebSocketHandler):
             }))
 
     def on_message(self, message):
-        result = MessageValidator().loads(message)
+        result = PayloadValidator().validate(message)
+        print(result)
 
         if result.errors:
             print(result)
             self.write_message(json.dumps(result.errors))
         else:
             reply = result.data
+            session.add(reply)
+            session.commit()
+            response = PayloadValidator().unmarshal(result.data)
             try:
                 session.add(reply)
                 session.commit()
@@ -41,6 +45,7 @@ class WsHandler(WebSocketHandler):
             # send reply to receipent
             try:
                 WsHandler.connected[reply.to_user].write_message(response)
+                print(response)
             except KeyError as ke:
                 # receipent not yet connected
                 print("Receipent {0} not connected".format(reply.to_user))
