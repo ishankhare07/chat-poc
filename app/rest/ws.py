@@ -40,7 +40,7 @@ class WsHandler(WebSocketHandler):
                 session.rollback()
                 session.add(reply)
                 session.commit()
-            response = MessageValidator().dumps(reply).data
+            response = PayloadValidator().dumps(reply).data
 
             # send reply to receipent
             try:
