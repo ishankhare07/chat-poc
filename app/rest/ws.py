@@ -23,7 +23,6 @@ class WsHandler(WebSocketHandler):
 
     def on_message(self, message):
         result = PayloadValidator().validate(message)
-        print(result)
 
         if result.errors:
             print(result)
@@ -40,7 +39,7 @@ class WsHandler(WebSocketHandler):
                 session.rollback()
                 session.add(reply)
                 session.commit()
-            response = PayloadValidator().dumps(reply).data
+            response = PayloadValidator().unmarshal(reply)
 
             # send reply to receipent
             try:
