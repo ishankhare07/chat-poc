@@ -29,8 +29,13 @@ class WsHandler(WebSocketHandler):
             self.write_message(json.dumps(result.errors))
         else:
             reply = result.data
-            session.add(reply)
-            session.commit()
+            try:
+                session.add(reply)
+                session.commit()
+            except:
+                session.rollback()
+                session.add(reply)
+                session.commit()
             response = MessageValidator().dumps(reply).data
 
             # send reply to receipent
