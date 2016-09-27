@@ -1,5 +1,6 @@
 from .handshake_validator import HandshakeValidator
 from .message_validator import MessageValidator
+from ..global_store import GlobalStore
 from json.decoder import JSONDecodeError
 import json
 
@@ -20,9 +21,10 @@ class PayloadValidator:
         types of messages
     """
 
+    store = GlobalStore()
 
     @staticmethod
-    def validate(payload):
+    def validate(payload, websocket=None):
         try:
             data = json.loads(payload)
         except JSONDecodeError as decodeError:
@@ -40,6 +42,9 @@ class PayloadValidator:
             # use HandshakeValidator
             result = HandshakeValidator().load(data)
             result.data.type = 'handshake'
+            if not result.errors:
+                # no errors hence move from connected to verified
+                PayloadValidator.store.move_to_verified(result.data.from_user, websocket)
             return result
 
     @staticmethod
