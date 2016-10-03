@@ -10,15 +10,19 @@ class ModifiedDict(dict):
             # key doesn't exists
             self.__dict[key] = [value]
 
-    def __getitem__(self, key):
-        return self.__dict.get(key)
+    def __getitem__(self, key, default=[]):
+        result = self.__dict.get(key)
+        return result if result else default
 
-    def pop(self, key, value):
-        return self.__dict[key]
+    def pop(self, key):
+        self.__dict.pop(key)
 
     def get(self, key, default=None):
         result = self.__dict.get(key)
         return result if result else default
+
+    def keys(self):
+        return self.__dict.keys()
 
     def __repr__(self):
         return dict.__repr__(self.__dict)
@@ -41,8 +45,19 @@ class GlobalStore:
             move the websocket object from connected
             to verified
         """
-        self.remove_connected(key, value)
-        GlobalStore.__verified[key] = value
+        if self.remove_connected(key, value):
+            GlobalStore.__verified[key] = value
 
     def remove_connected(self, key, value):
-        GlobalStore.__connected[key].remove(value)
+        if key in GlobalStore.__connected.keys():
+            GlobalStore.__connected[key].remove(value)
+            if not GlobalStore.__connected[key]:
+                GlobalStore.__connected.pop(key)
+            return True
+        else:
+            return False
+
+    def remove_verified(self, key, value):
+        GlobalStore.__verified[key].remove(value)
+        if not GlobalStore.__verified[key]:
+            GlobalStore.__verified.pop(key)
