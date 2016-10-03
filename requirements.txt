@@ -1,4 +1,6 @@
 alembic==0.8.7
+apispec==0.14.0
+coverage==4.2
 ecdsa==0.13
 future==0.15.2
 inflect==0.2.5
