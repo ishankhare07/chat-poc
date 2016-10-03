@@ -226,7 +226,7 @@ class Reply(Base):
     read = Column(Boolean, default=False, nullable=False)
 
     def __repr__(self):
-        return '<Reply: {0}, msg: {1}>'.format(self.id, self.message)
+        return '<Reply: {0},from: {2}, msg: {1}>'.format(self.id, self.message, self.from_user)
 
 class EnquiryReplyDatum(Base):
     __tablename__ = 'enquiry_reply_data'
