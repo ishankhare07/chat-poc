@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, validates, ValidationError, post_load
-from ..models.existing_models import Reply
+from .models.existing_models import Reply
 
 class MessageValidator(Schema):
     type = fields.Str(required=True)

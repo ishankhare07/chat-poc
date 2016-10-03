@@ -1,20 +1,21 @@
-from .base import *
 from tornado.websocket import WebSocketHandler
 from .validators import PayloadValidator
-from .validators import HandshakeValidator
+from .validators import EndpointValidator
+from .global_store import GlobalStore
+import json
 
 class WsHandler(WebSocketHandler):
-    connected = {}
+    store = GlobalStore()
 
     def open(self, user_id):
         # make it int until handshake validator not completed
-        result = HandshakeValidator().load({'user_id': user_id})
+        result = EndpointValidator().load({'user_id': user_id})
         if result.errors:
             print('closing:', result)
             self.write_message(json.dumps(result.errors))
             self.close()
         else:
-            WsHandler.connected[result.data['user_id']] = self
+            WsHandler.store.connected[result.data['user_id']] = self
             self.user_id = result.data['user_id']
             self.write_message(json.dumps({
                 "type": "handshake",
@@ -22,36 +23,29 @@ class WsHandler(WebSocketHandler):
             }))
 
     def on_message(self, message):
-        result = PayloadValidator().validate(message)
+        result = PayloadValidator().validate(message, self)
 
         if result.errors:
-            print(result)
             self.write_message(json.dumps(result.errors))
-        else:
+        elif result.data:
             reply = result.data
-            session.add(reply)
-            session.commit()
-            response = PayloadValidator().unmarshal(result.data)
-            try:
-                session.add(reply)
-                session.commit()
-            except:
-                session.rollback()
-                session.add(reply)
-                session.commit()
             response = PayloadValidator().unmarshal(reply)
 
             # send reply to receipent
-            try:
-                WsHandler.connected[reply.to_user].write_message(response)
-                print(response)
-            except KeyError as ke:
+            connection = None
+            for connection in WsHandler.store.verified.get(reply.to_user, []):
+                connection.write_message(response)
+            if not connection:
                 # receipent not yet connected
                 print("Receipent {0} not connected".format(reply.to_user))
-                print(WsHandler.connected)
+                print(WsHandler.store.connected)
+
+        else:
+            """
+                successful handshake
+            """
+            pass
 
     def on_close(self):
-        try:
-            WsHandler.connected.pop(self.user_id)
-        except KeyError as ke:
-            print('Client already removed or is not in connected')
+        # this needs more work for removing both connected and verified clients
+        WsHandler.store.remove_verified(self.user_id, self)
