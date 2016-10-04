@@ -29,7 +29,7 @@ class PayloadValidator:
     def validate(payload, websocket=None):
         try:
             data = json.loads(payload)
-        except JSONDecodeError as decodeError:
+        except:
             return Result(errors={
                 "type": "error",
                 "message": "invalid json"
@@ -68,6 +68,4 @@ class PayloadValidator:
     def unmarshal(data):
         if data.type == 'message':
             return MessageValidator().dumps(data).data
-        elif data['type'] == 'handshake':
-            return HandshakeValidator().dumps(data).data
 
