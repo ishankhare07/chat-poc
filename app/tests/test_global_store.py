@@ -31,7 +31,8 @@ class GlobalStoreTestCase(unittest.TestCase):
 
     def tearDown(self):
         gs = GlobalStore()
-        gs.reset()
+        gs.connected.clear()
+        gs.verified.clear()
 
 
 class ModifiedDictTestCase(unittest.TestCase):

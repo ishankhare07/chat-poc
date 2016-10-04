@@ -24,6 +24,9 @@ class ModifiedDict(dict):
     def keys(self):
         return self.__dict.keys()
 
+    def clear(self):
+        self.__dict.clear()
+
     def __repr__(self):
         return dict.__repr__(self.__dict)
 
