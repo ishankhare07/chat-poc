@@ -1,4 +1,5 @@
-from ..rest.validators.payload_validator import PayloadValidator
+from ..rest.validators.payload_validator import PayloadValidator, session
+from ..rest.validators.models.existing_models import Reply
 import unittest
 import json
 
@@ -7,7 +8,7 @@ class PayloadValidatorTestCase(unittest.TestCase):
         self.pv = PayloadValidator()
         self.message_payload = json.dumps({
             "type": "message",
-            "enquiry_id": 1234,
+            "enquiry_id": 779,
             "from_user": 2561,
             "to_user": 2562,
             "message": "spam",
@@ -20,8 +21,32 @@ class PayloadValidatorTestCase(unittest.TestCase):
             "jwt": "some jwt as a string"
             })
 
-    def test_message_payload(self):
-        self.assertEqual(self.pv.validate(self.message_payload).errors, {})
+        self.invalid_json = [1,2,3,4,5]
+
+    def test_incomplete_handshake(self):
+        self.assertIsNotNone(self.pv.validate(self.message_payload).errors)
 
     def test_handshake_payload(self):
-        self.assertEqual(self.pv.validate(self.handshake_payload).errors, {})
+        self.assertFalse(self.pv.validate(self.handshake_payload).errors)
+
+    def test_invalid_json(self):
+        self.assertIsNotNone(self.pv.validate(self.invalid_json).errors)
+
+    def test_message_payload(self):
+        self.pv.store.verified[2561] = 'one'
+        self.assertFalse(self.pv.validate(self.message_payload, websocket='one').errors)
+
+    def test_unmarshalling(self):
+        self.pv.store.verified[2561] = 'one'
+        result = self.pv.validate(self.message_payload, websocket='one')
+        unmarshalled = self.pv.unmarshal(result.data)
+        marshalled = json.loads(unmarshalled)
+        del marshalled['id']
+        self.assertEqual(
+                marshalled,
+                json.loads(self.message_payload)
+                )
+
+    def tearDown(self):
+        session.query(Reply).filter_by(from_user=2561, to_user=2562, enquiry_id=779).delete()
+        session.commit()
