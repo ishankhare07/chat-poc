@@ -1,5 +1,6 @@
 from .handshake_validator import HandshakeValidator
 from .message_validator import MessageValidator
+from .acknowledgement_validator import AcknowledgementValidator
 from ..global_store import GlobalStore
 from json.decoder import JSONDecodeError
 from .base import *
@@ -64,8 +65,19 @@ class PayloadValidator:
                 PayloadValidator.store.move_to_verified(result.data['user_id'], websocket)
             return Result(data=None)
 
+        elif data['type'] == 'acknowledgement':
+            result = AcknowledgementValidator().load(data)
+            return result
+
     @staticmethod
     def unmarshal(data):
         if data.type == 'message':
             return MessageValidator().dumps(data).data
+        if data.type == 'acknowledgement':
+            return AcknowledgementValidator().dumps(data).data
 
+    @staticmethod
+    def parse_reply_to_ack(reply):
+        reply.type = 'acknowledgement'
+        reply.category = 'server-received'
+        return AcknowledgementValidator().dumps(reply).data

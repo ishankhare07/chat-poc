@@ -225,6 +225,8 @@ class Reply(Base):
     local_msg_id = Column(Integer)
     read = Column(Boolean, default=False, nullable=False)
 
+    category = None
+
     def __repr__(self):
         return '<Reply: {0},from: {2}, msg: {1}>'.format(self.id, self.message, self.from_user)
 
