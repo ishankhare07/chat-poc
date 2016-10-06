@@ -23,12 +23,20 @@ class WsHandler(WebSocketHandler):
             }))
 
     def on_message(self, message):
-        result = PayloadValidator().validate(message, self)
+        result = PayloadValidator.validate(message, self)
 
         if result.errors:
             self.write_message(json.dumps(result.errors))
         elif result.data:
             reply = result.data
+
+            # send server-received acknowledgement to sender
+            ack = PayloadValidator.parse_reply_to_ack(reply)
+            for connection in WsHandler.store.verified.get(reply.from_user, []):
+                connection.write_message(ack)
+
+            
+            # get responses
             response = PayloadValidator().unmarshal(reply)
 
             # send reply to receipent

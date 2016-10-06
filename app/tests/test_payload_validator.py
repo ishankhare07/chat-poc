@@ -21,7 +21,22 @@ class PayloadValidatorTestCase(unittest.TestCase):
             "jwt": "some jwt as a string"
             })
 
+        self.acknowledgement_payload = {
+            "type": "acknowledgement",
+            "id": 12345,
+            "category": 'server-received'
+            }
+
         self.invalid_json = [1,2,3,4,5]
+
+        self.reply_data = {
+            "enquiry_id": 779,
+            "from_user": 2561,
+            "to_user": 2562,
+            "message": "spam",
+            "local_msg_id": 12345
+                }
+
 
     def test_incomplete_handshake(self):
         self.assertIsNotNone(self.pv.validate(self.message_payload).errors)
@@ -46,6 +61,14 @@ class PayloadValidatorTestCase(unittest.TestCase):
                 marshalled,
                 json.loads(self.message_payload)
                 )
+
+    def test_acknowledgement_payload(self):
+        reply = Reply(**self.reply_data)
+        session.add(reply)
+        session.commit()
+
+        self.acknowledgement_payload['id'] = reply.id
+        self.assertFalse(self.pv.validate(json.dumps(self.acknowledgement_payload)).errors)
 
     def tearDown(self):
         session.query(Reply).filter_by(from_user=2561, to_user=2562, enquiry_id=779).delete()
