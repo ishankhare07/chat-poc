@@ -11,6 +11,8 @@ from models.enquiries import *
 from models.replies import *
 '''
 from models.existing_models import *
+from models.replies import Reply
+from models.enquiries import EnquiryDatum
 #from models import Base
 
 # this is the Alembic Config object, which provides

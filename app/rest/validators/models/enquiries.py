@@ -32,7 +32,6 @@ class EnquiryDatum(Base):
     variety = Column(String(50), nullable=False)
     packing = Column(String(50), nullable=False)
     payment = Column(String(50), nullable=False)
-    reading_status = Column(Integer, nullable=False)
     enquiry_url = Column(Text, nullable=False)
     user_id = Column(Integer, ForeignKey('user.user_id'))
     replies = relationship("Reply", backref="enquiry_data")

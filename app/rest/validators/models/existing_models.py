@@ -1,7 +1,6 @@
 # coding: utf-8
-from sqlalchemy import BINARY, Column, DateTime, Enum, Integer, String, Table, Text, text, ForeignKey, Boolean
+from sqlalchemy import BINARY, Column, DateTime, Enum, Integer, String, Table, Text, text
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 
 
 Base = declarative_base()
@@ -340,22 +339,6 @@ t_migrations = Table(
 )
 
 
-class NewBuyerEnquiry(Base):
-    __tablename__ = 'new_buyer_enquiries'
-
-    id = Column(Integer, primary_key=True)
-    script_runtime = Column(DateTime, nullable=False)
-    enquiry_count = Column(Integer)
-
-
-class NewSellerEnquiry(Base):
-    __tablename__ = 'new_seller_enquiries'
-
-    id = Column(Integer, primary_key=True)
-    script_runtime = Column(DateTime, nullable=False)
-    enquiry_count = Column(Integer, nullable=False)
-
-
 class OrderSupplier(Base):
     __tablename__ = 'order_supplier'
 
@@ -517,17 +500,6 @@ class PackagingOfFruitAndVegetablesProcessedProduct(Base):
     is_active = Column(Integer, nullable=False)
 
 
-class Payment(Base):
-    __tablename__ = 'payment'
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
-    request = Column(String(220), nullable=False)
-    response = Column(String(220), nullable=False)
-    status = Column(Integer, nullable=False)
-    time = Column(Integer, nullable=False)
-
-
 class ProductionOfFruitAndVegetable(Base):
     __tablename__ = 'production_of_fruit_and_vegetables'
 
@@ -568,34 +540,6 @@ class QualityControlAndAssurance(Base):
     contact_person = Column(String(128))
     contact_person_phone_no = Column(Integer)
     commercial_terms = Column(Text)
-    image = Column(String(255), nullable=False)
-    is_active = Column(Integer, nullable=False)
-
-
-class SeedsProduct(Base):
-    __tablename__ = 'seeds_product'
-
-    id = Column(Integer, primary_key=True)
-    service_id = Column(Integer, nullable=False)
-    name = Column(String(100), nullable=False)
-    product_name = Column(String(255), nullable=False)
-    varity = Column(String(100), nullable=False)
-    germination_per = Column(String(20), nullable=False)
-    purity_per = Column(String(20), nullable=False)
-    pack_size = Column(String(50), nullable=False)
-    treated = Column(String(3), nullable=False)
-    more_info = Column(Text, nullable=False)
-    payment_mode = Column(String(255), nullable=False)
-    delivery_start_date = Column(String(25), nullable=False)
-    delivery_end_date = Column(String(25), nullable=False)
-    packed_in = Column(String(100), nullable=False)
-    possible_destination = Column(String(100), nullable=False)
-    fob_price = Column(String(255), nullable=False)
-    maturity_days = Column(String(255), nullable=False)
-    season = Column(String(255), nullable=False)
-    colour = Column(String(255), nullable=False)
-    _yield = Column('yield', String(255), nullable=False)
-    product_description = Column(Text, nullable=False)
     image = Column(String(255), nullable=False)
     is_active = Column(Integer, nullable=False)
 
@@ -718,7 +662,7 @@ class User(Base):
     ip = Column(String(255), nullable=False)
     added_by = Column(Integer, nullable=False)
     is_phone_verified = Column(BINARY(1), nullable=False, server_default=text("'0'"))
-    enquiries = relationship("EnquiryDatum", backref="user")
+    remember_token = Column(String(100))
 
 
 class UserOtp(Base):
@@ -726,6 +670,7 @@ class UserOtp(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
+    phone_number = Column(String(20))
     generated_otp = Column(String(100), nullable=False)
     generation_time = Column(DateTime, nullable=False)
     expiry_time = Column(DateTime, nullable=False)

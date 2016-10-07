@@ -7,7 +7,7 @@ import os
 import json
 
 Session = sessionmaker()
-engine = create_engine(os.environ.get('DB_CONNECTION_URL'))
+engine = create_engine(os.environ.get('DEMO_DB_URL'))
 
 Session.configure(bind=engine)
 
