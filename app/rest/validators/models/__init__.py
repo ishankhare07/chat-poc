@@ -1,5 +1,3 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from .replies import Reply
+from .enquiries import EnquiryDatum
 
-Base = declarative_base()
