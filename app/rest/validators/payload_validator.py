@@ -54,6 +54,7 @@ class PayloadValidator:
                 session.commit()
 
             result.data.type = 'message'
+
             return result
 
         elif data['type'] == 'handshake':
@@ -73,11 +74,12 @@ class PayloadValidator:
     def unmarshal(data):
         if data.type == 'message':
             return MessageValidator().dumps(data).data
-        if data.type == 'acknowledgement':
+        elif data.type == 'acknowledgement':
             return AcknowledgementValidator().dumps(data).data
 
     @staticmethod
-    def parse_reply_to_ack(reply):
-        reply.type = 'acknowledgement'
-        reply.category = 'server-received'
-        return AcknowledgementValidator().dumps(reply).data
+    def parse_reply_to_ack(response):
+        reply = json.loads(response)
+        reply['type'] = 'acknowledgement'
+        reply['category'] = 'server-received'
+        return AcknowledgementValidator().dump(reply).data
