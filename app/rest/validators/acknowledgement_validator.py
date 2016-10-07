@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields, validates, ValidationError, post_load
-from .models.existing_models import Reply
-from .base import session
+from .base import session, Reply
 
 
 class AcknowledgementValidator(Schema):
@@ -34,6 +33,7 @@ class AcknowledgementValidator(Schema):
 
     @post_load
     def make_reply(self, data):
+        print('in post_load')
         if data['category'] == 'received':
             return {
                 'type': data['type'],
@@ -46,6 +46,7 @@ class AcknowledgementValidator(Schema):
             return reply
         else:
             # server received ack
+            print('parsing ack')
             reply = session.query(Reply).filter_by(id=data['id']).first()
             reply.category = 'server-received'
             return reply

@@ -1,4 +1,6 @@
-from .models.existing_models import EnquiryDatum, User, Reply
+from .models import EnquiryDatum
+from .models import Reply
+from .models.existing_models import User
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import os

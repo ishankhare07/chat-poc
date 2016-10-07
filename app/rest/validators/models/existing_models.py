@@ -180,56 +180,6 @@ class Employe(Base):
     service_id = Column(Integer, nullable=False)
 
 
-class EnquiryDatum(Base):
-    __tablename__ = 'enquiry_data'
-
-    id = Column(Integer, primary_key=True)
-    supplier_id = Column(Integer, nullable=False)
-    buyer_id = Column(Integer, nullable=False)
-    name = Column(String(30), nullable=False)
-    last_name = Column(String(220), nullable=False)
-    contact = Column(String(20), nullable=False)
-    email = Column(String(30), nullable=False)
-    product_name = Column(String(30), nullable=False)
-    product_type = Column(String(30), nullable=False)
-    mini_quantity = Column(Integer, nullable=False)
-    unit = Column(String(10), nullable=False)
-    date = Column(String(15), nullable=False)
-    msg = Column(Text, nullable=False)
-    file_name = Column(String(50), nullable=False)
-    status = Column(Integer, nullable=False)
-    date_time = Column(String(255), nullable=False)
-    customer_type = Column(String(220), nullable=False)
-    location = Column(String(220), nullable=False)
-    price = Column(String(220), nullable=False)
-    quality = Column(String(50), nullable=False)
-    enquirer_type = Column(String(50), nullable=False)
-    frequency = Column(String(50), nullable=False)
-    additional_comments = Column(String(255), nullable=False)
-    variety = Column(String(50), nullable=False)
-    packing = Column(String(50), nullable=False)
-    payment = Column(String(50), nullable=False)
-    reading_status = Column(Integer, nullable=False)
-    enquiry_url = Column(Text, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.user_id'))
-    replies = relationship("Reply", backref="enquiry_data")
-
-class Reply(Base):
-    __tablename__ = 'replies'
-
-    id = Column(Integer, primary_key=True)
-    message = Column(Text, nullable=False)
-    enquiry_id = Column(Integer, ForeignKey('enquiry_data.id'))
-    from_user = Column(Integer, ForeignKey('user.user_id'))
-    to_user = Column(Integer, ForeignKey('user.user_id'))
-    local_msg_id = Column(Integer)
-    read = Column(Boolean, default=False, nullable=False)
-
-    category = None
-
-    def __repr__(self):
-        return '<Reply: {0},from: {2}, msg: {1}>'.format(self.id, self.message, self.from_user)
-
 class EnquiryReplyDatum(Base):
     __tablename__ = 'enquiry_reply_data'
 

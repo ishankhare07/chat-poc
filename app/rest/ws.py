@@ -1,5 +1,6 @@
 from tornado.websocket import WebSocketHandler
 from .validators import PayloadValidator
+from. validators.payload_validator import Result
 from .validators import EndpointValidator
 from .global_store import GlobalStore
 import json
@@ -24,20 +25,19 @@ class WsHandler(WebSocketHandler):
 
     def on_message(self, message):
         result = PayloadValidator.validate(message, self)
-
         if result.errors:
             self.write_message(json.dumps(result.errors))
         elif result.data:
             reply = result.data
 
-            # send server-received acknowledgement to sender
-            ack = PayloadValidator.parse_reply_to_ack(reply)
-            for connection in WsHandler.store.verified.get(reply.from_user, []):
-                connection.write_message(ack)
-
-            
             # get responses
             response = PayloadValidator().unmarshal(reply)
+
+
+            # send acknowledegements
+            ack = PayloadValidator.parse_reply_to_ack(response)
+            for connection in WsHandler.store.verified.get(reply.from_user, []):
+                connection.write_message(ack)
 
             # send reply to receipent
             connection = None
@@ -47,6 +47,11 @@ class WsHandler(WebSocketHandler):
                 # receipent not yet connected
                 print("Receipent {0} not connected".format(reply.to_user))
                 print(WsHandler.store.connected)
+
+            # send server-received acknowledgement to sender
+            """ack = PayloadValidator.parse_reply_to_ack(reply)
+            for connection in WsHandler.store.verified.get(reply.from_user, []):
+                connection.write_message(ack)"""
 
         else:
             """

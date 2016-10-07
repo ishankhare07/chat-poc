@@ -1,5 +1,5 @@
 from ..rest.validators.acknowledgement_validator import AcknowledgementValidator, session
-from ..rest.validators.models.existing_models import Reply
+from ..rest.validators.models.replies import Reply
 import unittest
 import json
 
@@ -47,7 +47,8 @@ class AcknowledgementValidatorTestCase(unittest.TestCase):
 
         self.data['id'] = reply.id
         result = self.ack_v.load(self.data)
-        self.assertIsNotNone(self.ack_v.dumps(result.data).data)
+        print(self.ack_v.dumps(result.data))
+        self.assertFalse(self.ack_v.dumps(result.data).errors)
 
     def tearDown(self):
         session.query(Reply).filter_by(from_user=self.reply_data['from_user'],

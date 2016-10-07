@@ -1,5 +1,5 @@
 from ..rest.validators.payload_validator import PayloadValidator, session
-from ..rest.validators.models.existing_models import Reply
+from ..rest.validators.models.replies import Reply
 import unittest
 import json
 

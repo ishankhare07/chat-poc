@@ -1,5 +1,5 @@
 from ..rest.validators.message_validator import MessageValidator
-from ..rest.validators.models.existing_models import Reply
+from ..rest.validators.models.replies import Reply
 import unittest
 import json
 import copy
