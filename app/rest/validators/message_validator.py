@@ -46,5 +46,6 @@ class MessageValidator(Schema):
                     enquiry_id = data['enquiry_id'],
                     from_user = data['from_user'],
                     to_user = data['to_user'],
-                    local_msg_id = data['local_msg_id']
+                    local_msg_id = data['local_msg_id'],
+                    type = data['type']
                     )
