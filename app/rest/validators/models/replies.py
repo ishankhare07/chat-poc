@@ -12,6 +12,7 @@ class Reply(Base):
     to_user = Column(Integer, ForeignKey('user.user_id'))
     local_msg_id = Column(Integer)
     read = Column(Boolean, default=False, nullable=False)
+    received = Column(Boolean, default=False, nullable=False)
 
     category = None
 
