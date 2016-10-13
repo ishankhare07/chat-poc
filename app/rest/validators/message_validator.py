@@ -8,7 +8,7 @@ class MessageValidator(Schema):
     to_user = fields.Integer(required=True)
     local_msg_id = fields.Integer(required=True)
     message = fields.Str(required=True)
-    id = fields.Str()
+    id = fields.Integer()
 
     @validates('type')
     def validate_type(self, data):
