@@ -41,11 +41,16 @@ class PayloadValidator:
             # use MessageValidator
             result = MessageValidator().load(data)
 
+            if result.errors:
+                websocket.write_message(json.dumps(result.errors))
+                return
+
             if websocket not in PayloadValidator.store.verified[result.data.from_user]:
-                return Result(errors={
+                 websocket.write_message(json.dumps({
                     "type": "error",
                     "message": "Handshake not completed"
-                    })
+                    }))
+                 return
             try:
                 session.add(result.data)
                 session.commit()
