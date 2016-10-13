@@ -7,6 +7,7 @@ class AcknowledgementValidator(Schema):
     id = fields.Integer(required=True)
     category = fields.Str(required=True)
     local_msg_id = fields.Integer()
+    to_user = fields.Integer()
 
     @validates('type')
     def validate_type(self, data):
@@ -38,7 +39,8 @@ class AcknowledgementValidator(Schema):
             return {
                 'type': data['type'],
                 'id': data['id'],
-                'category': data['category']
+                'category': data['category'],
+                'to_user': data['to_user']
                 }
         elif data['category'] == 'read':
             reply = session.query(Reply).filter_by(id=data['id']).first()

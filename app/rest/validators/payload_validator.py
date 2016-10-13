@@ -31,10 +31,11 @@ class PayloadValidator:
         try:
             data = json.loads(payload)
         except:
-            return Result(errors={
+            websocket.write_message(json.dumps(
+                errors={
                 "type": "error",
                 "message": "invalid json"
-                })
+                }))
 
         if data['type'] == 'message':
             # use MessageValidator
@@ -54,6 +55,22 @@ class PayloadValidator:
                 session.commit()
 
             result.data.type = 'message'
+            response = PayloadValidator.unmarshal(result.data)
+
+            # send acks
+            ack = PayloadValidator.parse_reply_to_ack(response)
+            for connection in PayloadValidator.store.verified.get(result.data.from_user, []):
+                connection.write_message(ack)
+
+            # send reply to receipent
+            connection = None
+            for connection in PayloadValidator.store.verified.get(result.data.to_user, []):
+                connection.write_message(PayloadValidator.unmarshal(result.data))
+            if not connection:
+                # receipent not yet connected
+                print("Receipent {0} not connected".format(result.data.to_user))
+                print(PayloadValidator.store.connected)
+
 
             return result
 
@@ -64,11 +81,11 @@ class PayloadValidator:
             if not result.errors:
                 # no errors hence move from connected to verified
                 PayloadValidator.store.move_to_verified(result.data['user_id'], websocket)
-            return Result(data=None)
 
         elif data['type'] == 'acknowledgement':
             result = AcknowledgementValidator().load(data)
-            return result
+            for connection in PayloadValidator.store.verified.get(result.data['to_user'], []):
+                connection.write_message(json.dumps(result.data))
 
     @staticmethod
     def unmarshal(data):

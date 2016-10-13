@@ -25,34 +25,8 @@ class WsHandler(WebSocketHandler):
 
     def on_message(self, message):
         result = PayloadValidator.validate(message, self)
-        if result.errors:
-            self.write_message(json.dumps(result.errors))
-        elif result.data:
-            reply = result.data
-
-            # get responses
-            response = PayloadValidator().unmarshal(reply)
-
-
-            # send acknowledegements
-            ack = PayloadValidator.parse_reply_to_ack(response)
-            for connection in WsHandler.store.verified.get(reply.from_user, []):
-                connection.write_message(ack)
-
-            # send reply to receipent
-            connection = None
-            for connection in WsHandler.store.verified.get(reply.to_user, []):
-                connection.write_message(response)
-            if not connection:
-                # receipent not yet connected
-                print("Receipent {0} not connected".format(reply.to_user))
-                print(WsHandler.store.connected)
-
-            # send server-received acknowledgement to sender
-            """ack = PayloadValidator.parse_reply_to_ack(reply)
-            for connection in WsHandler.store.verified.get(reply.from_user, []):
-                connection.write_message(ack)"""
-
+        if result:
+            pass
         else:
             """
                 successful handshake
