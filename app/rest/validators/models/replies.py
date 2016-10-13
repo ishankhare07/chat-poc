@@ -13,10 +13,11 @@ class Reply(Base):
     local_msg_id = Column(Integer)
     read = Column(Boolean, default=False, nullable=False)
     received = Column(Boolean, default=False, nullable=False)
+    type = Column(Text, nullable=False)
 
     category = None
 
     def __repr__(self):
-        return '<Reply: {0},from: {2}, msg: {1}>'.format(self.id, self.message, self.from_user)
+        return '<Reply: {0},from: {2}, to: {3}, msg: {1}>'.format(self.id, self.message, self.from_user, self.to_user)
 
 
