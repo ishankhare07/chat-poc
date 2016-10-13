@@ -36,6 +36,15 @@ class AcknowledgementValidator(Schema):
     def make_reply(self, data):
         print('in post_load')
         if data['category'] == 'received':
+            msg = session.query(Reply).filter_by(id=data['id']).first()
+            msg.received = True
+            try:
+                session.add(msg)
+                session.commit()
+            except:
+                session.rollback()
+                session.add(msg)
+                session.commit()
             return {
                 'type': data['type'],
                 'id': data['id'],

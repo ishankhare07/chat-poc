@@ -87,6 +87,14 @@ class PayloadValidator:
                 # no errors hence move from connected to verified
                 PayloadValidator.store.move_to_verified(result.data['user_id'], websocket)
 
+            # fetch un-received messages for this client
+            for message in session.query(Reply).filter_by(to_user=result.data['user_id'],
+                                                            received=False).all():
+                print(message)
+                websocket.write_message(
+                            PayloadValidator.unmarshal(message))
+            return
+
         elif data['type'] == 'acknowledgement':
             result = AcknowledgementValidator().load(data)
             for connection in PayloadValidator.store.verified.get(result.data['to_user'], []):
