@@ -1,18 +1,23 @@
 from tornado.websocket import WebSocketHandler
 from .validators import PayloadValidator
-from. validators.payload_validator import Result
 from .validators import EndpointValidator
 from .global_store import GlobalStore
+from logentries import LogentriesHandler
+import logging
 import json
 
 class WsHandler(WebSocketHandler):
     store = GlobalStore()
+    log = logging.getLogger('logentries')
+    log.setLevel(logging.INFO)
+    log.addHandler(LogentriesHandler('58ba03d6-2305-42bd-b0e7-af3ccfd1b698'))
 
     def open(self, user_id):
         # make it int until handshake validator not completed
         result = EndpointValidator().load({'user_id': user_id})
         if result.errors:
             print('closing:', result)
+            WsHandler.log.info('closing:', result)
             self.write_message(json.dumps(result.errors))
             self.close()
         else:
@@ -24,14 +29,17 @@ class WsHandler(WebSocketHandler):
             }))
 
     def on_message(self, message):
-        result = PayloadValidator.validate(message, self)
-        if result:
-            pass
-        else:
-            """
-                successful handshake
-            """
-            pass
+        try:
+            result = PayloadValidator.validate(message, self)
+        except Exception as e:
+            WsHandler.log.exception(e)
+            if result:
+                pass
+            else:
+                """
+                    successful handshake
+                """
+                pass
 
     def on_close(self):
         # this needs more work for removing both connected and verified clients

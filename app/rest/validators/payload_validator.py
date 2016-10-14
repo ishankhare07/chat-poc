@@ -4,6 +4,8 @@ from .acknowledgement_validator import AcknowledgementValidator
 from ..global_store import GlobalStore
 from json.decoder import JSONDecodeError
 from .base import *
+from logentries import LogentriesHandler
+import logging
 import json
 
 class Result:
@@ -25,6 +27,9 @@ class PayloadValidator:
     """
 
     store = GlobalStore()
+    log = logging.getLogger('logentries')
+    log.setLevel(logging.INFO)
+    log.addHandler(LogentriesHandler('58ba03d6-2305-42bd-b0e7-af3ccfd1b698'))
 
     @staticmethod
     def validate(payload, websocket=None):
@@ -75,6 +80,8 @@ class PayloadValidator:
                 # receipent not yet connected
                 print("Receipent {0} not connected".format(result.data.to_user))
                 print(PayloadValidator.store.connected)
+                PayloadValidator.log.warn("Receipent {0} not connected".format(result.data.to_user))
+                PayloadValidator.log.info(PayloadValidator.store.connected)
 
 
             return result
@@ -91,6 +98,7 @@ class PayloadValidator:
             for message in session.query(Reply).filter_by(to_user=result.data['user_id'],
                                                             received=False).all():
                 print(message)
+                PayloadValidator.log.info(message)
                 websocket.write_message(
                             PayloadValidator.unmarshal(message))
             return
