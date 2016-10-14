@@ -1,9 +1,11 @@
 alembic==0.8.7
 apispec==0.14.0
+certifi==2016.9.26
 coverage==4.2
 ecdsa==0.13
 future==0.15.2
 inflect==0.2.5
+Logentries==0.17
 Mako==1.0.4
 MarkupSafe==0.23
 marshmallow==2.10.1
