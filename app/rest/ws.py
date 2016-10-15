@@ -3,6 +3,7 @@ from .validators import PayloadValidator
 from .validators import EndpointValidator
 from .global_store import GlobalStore
 from logentries import LogentriesHandler
+from validators.base import session
 import logging
 import json
 
@@ -32,7 +33,9 @@ class WsHandler(WebSocketHandler):
         try:
             result = PayloadValidator.validate(message, self)
         except Exception as e:
+            session.rollback()
             WsHandler.log.exception(e)
+            return
             if result:
                 pass
             else:
