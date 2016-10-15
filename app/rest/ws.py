@@ -3,7 +3,7 @@ from .validators import PayloadValidator
 from .validators import EndpointValidator
 from .global_store import GlobalStore
 from logentries import LogentriesHandler
-from validators.base import session
+from .validators.base import session
 import logging
 import json
 
