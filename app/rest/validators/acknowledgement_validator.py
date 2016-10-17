@@ -7,6 +7,7 @@ class AcknowledgementValidator(Schema):
     id = fields.Integer(required=True)
     category = fields.Str(required=True)
     local_msg_id = fields.Integer()
+    enquiry_id = fields.Integer()
     to_user = fields.Integer()
 
     @validates('type')
