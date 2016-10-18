@@ -30,7 +30,7 @@ class AcknowledgementValidator(Schema):
 
     @validates('category')
     def validates_category(self, data):
-        if data not in ["received", 'server-received']:
+        if data not in ["received", 'server-received', 'read']:
             raise ValidationError("Invalid acknowledgement category")
 
     @post_load
@@ -55,7 +55,19 @@ class AcknowledgementValidator(Schema):
         elif data['category'] == 'read':
             reply = session.query(Reply).filter_by(id=data['id']).first()
             reply.read = True
-            return reply
+            try:
+                session.add(reply)
+                session.commit()
+            except:
+                session.rollback()
+                session.add(reply)
+                session.commit()
+            return {
+                'type': data['type'],
+                'id': data['id'],
+                'category': data['category'],
+                'to_user': data['to_user']
+                    }
         else:
             # server received ack
             print('parsing ack')
