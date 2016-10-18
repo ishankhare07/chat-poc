@@ -105,11 +105,17 @@ class PayloadValidator:
 
         elif data['type'] == 'acknowledgement':
             result = AcknowledgementValidator().load(data)
+            if result.errors:
+                websocket.write_message(result.errors)
+                return
+            print(result)
             for connection in PayloadValidator.store.verified.get(result.data['to_user'], []):
+                print(result.data)
                 connection.write_message(json.dumps(result.data))
 
     @staticmethod
     def unmarshal(data):
+        print('in unmarshal', data)
         if data.type == 'message':
             return MessageValidator().dumps(data).data
         elif data.type == 'acknowledgement':
