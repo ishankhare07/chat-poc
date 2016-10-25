@@ -13,6 +13,9 @@ class WsHandler(WebSocketHandler):
     log.setLevel(logging.INFO)
     log.addHandler(LogentriesHandler('58ba03d6-2305-42bd-b0e7-af3ccfd1b698'))
 
+    def check_origin(self, origin):
+        return True
+
     def open(self, user_id):
         # make it int until handshake validator not completed
         result = EndpointValidator().load({'user_id': user_id})
